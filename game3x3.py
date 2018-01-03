@@ -4,25 +4,28 @@ Game 2048 3x3
 Following the implementation of Georg Wiese: 
 https://github.com/georgwiese/2048-rl
 
-Editing the game setting to a 3x3 format with the purpose
-to reduce the number of states for the normal Q-learning 
+1) Editing the game setting to a 3x3 format with the purpose
+to reduce the number of states. Game states are represented as shape (3, 3) numpy arrays 
+whose entries are 0 for empty fields and ln2(value) for any tiles.
 
-Game states are represented as shape (3, 3) numpy arrays whos entries are 0
-for empty fields and ln2(value) for any tiles.
+2) Encapsulate experience
+    
+3) Play the game
+    
+4) Strategies: random, static, highest reward, greedy, epsilon greedy
 
 Algorithms and strategies to play 2048 and collect experience.
-
 """
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-""" Import Numby library for array calculations"""
+# Import Numby library for array calculations
 import numby as np 
 
 
-"""Define Actions"""
+# Define Actions
 ACTION_NAMES = ["left", "up", "right", "down"]
 ACTION_LEFT = 0
 ACTION_UP = 1
@@ -33,37 +36,33 @@ ACTION_DOWN = 3
 class Game(object):
 
   def __init__(self, state=None, initial_score=0): 
-      """first step of game
-          arguments:
-          
-          state: (3,3) numby array to initialize the state with. If None,
-          the state will be initialized with with two random tiles (as done
-          in the original game).
-          
-          initial_score: Score to initialize the Game with.
-          """
+    """ first step of game
+    arguments:
+        state: (3,3) numby array to initialize the state with. If None,
+        the state will be initialized with with two random tiles (as done in the original game).
+        initial_score: Score to initialize the Game with.
+    """
     self._score = initial_score
 
-    if state is None:  """if start of the game -> state =None"""
+    if state is None:  # if start of the game -> state =None 
       self._state = np.zeros((3, 3), dtype=np.int) 
-      """edit (3,3), start of the game -> empty arrays (zeros)"""
-      self.add_random_tile() """add two random tiles at the beginning"""
+      # edit (3,3), start of the game -> empty arrays (zeros)
+      self.add_random_tile() # add two random tiles at the beginning
       self.add_random_tile()
     else:
-      self._state = state """if not begin of the game..."""
+      self._state = state # if not begin of the game...
          
 
   def copy(self):
     """Return a copy of self."""
-
-  return Game(np.copy(self._state), self._score)
+    return Game(np.copy(self._state), self._score)
 
 ## define game over, available actions, do actions, add tiles 
 
   def game_over(self):
     """Whether the game is over."""
 
-    for action in range(4): """four possible actions"""
+    for action in range(4): # four possible actions
       if self.is_action_available(action):
         return False
     return True
@@ -77,7 +76,7 @@ class Game(object):
     That is, executing it would change the state.
     """
 
-    temp_state = np.rot90(self._state, action) """rotate array by 90 degrees"""
+    temp_state = np.rot90(self._state, action) # rotate array by 90 degrees
     return self._is_action_available_left(temp_state)
 
   def _is_action_available_left(self, state):
@@ -87,15 +86,15 @@ class Game(object):
     # be merged.
     for row in range(3):
       has_empty = False
-      for col in range(3)):
+      for col in range(3):
         has_empty |= state[row, col] == 0
         if state[row, col] != 0 and has_empty:
-          return True """left is possible"""
+          return True # left is possible 
         if (state[row, col] != 0 and col > 0 and
             state[row, col] == state[row, col - 1]):
-          return True """left is possible"""
+          return True # left is possible
 
-    return False """else, left is impossible"""
+    return False # else, left is impossible
 
 
   def do_action(self, action):
@@ -104,7 +103,7 @@ class Game(object):
     temp_state = np.rot90(self._state, action)
     reward = self._do_action_left(temp_state)
     self._state = np.rot90(temp_state, -action)
-    self._score += reward """add value to variable (e.g. if merged)"""
+    self._score += reward # add value to variable (e.g. if merged)
 
     self.add_random_tile()
 
@@ -117,8 +116,8 @@ class Game(object):
 
     for row in range(3): 
       # Always the rightmost tile in the current row that was already moved
-      merge_candidate = -1 """tile one to the left of rightmost tile"""
-      merged = np.zeros((3,), dtype=np.bool) """bool: binary array (e.g. true/flase"""
+      merge_candidate = -1 # tile one to the left of rightmost tile
+      merged = np.zeros((3,), dtype=np.bool) # bool: binary array (e.g. true/flase
       
 
       for col in range(3): 
@@ -131,7 +130,7 @@ class Game(object):
           # Merge tile with merge_candidate
           state[row, col] = 0
           merged[merge_candidate] = True
-          state[row, merge_candidate] += 1 """add value to variable"""
+          state[row, merge_candidate] += 1 # add value to variable
           reward += 2 ** state[row, merge_candidate]
 
         else:
@@ -149,7 +148,7 @@ class Game(object):
     x_pos, y_pos = np.where(self._state == 0)
     assert len(x_pos) != 0
     empty_index = np.random.choice(len(x_pos))
-    value = np.random.choice([1, 2], p=[0.9, 0.1]) """add new tile 90% chance add 1, 10% chance add 2"""
+    value = np.random.choice([1, 2], p=[0.9, 0.1]) #add new tile 90% chance add 1, 10% chance add 2
 
     self._state[x_pos[empty_index], y_pos[empty_index]] = value
 
@@ -162,10 +161,10 @@ class Game(object):
         return '% 5d' % (2 ** value,)
       return "     "
 
-    print "-" * 25
+    print ("-" * 25)
     for row in range(4): 
-      print "|" + "|".join([tile_string(v) for v in self._state[row, :]]) + "|"
-      print "-" * 25
+      print ("|" + "|".join([tile_string(v) for v in self._state[row, :]]) + "|")
+      print ("-" * 25)
 
   def state(self):
     """Return current state."""
