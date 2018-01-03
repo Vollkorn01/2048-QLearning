@@ -17,7 +17,7 @@ states = range(9^9)
 Q = np.zeros([9^9, 4]])
 
 learningRate = .8
-gamma = .95
+y = .95
 discount = 0.3
 
 
@@ -44,7 +44,7 @@ for i in range (num_episodes):
         reward = game.do_action(a)
         
         #Update Q-Table with new knowledge
-        Q[s,a] = Q[s,a] + learningRate *(reward + gamma*np.max(Q[s1,:]) - Q[s,a])
+        Q[s,a] = Q[s,a] + learningRate *(reward + y*np.max(Q[s1,:]) - Q[s,a])
         rAll += reward
         s = newState
         
