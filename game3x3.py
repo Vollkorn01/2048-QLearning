@@ -6,15 +6,10 @@ https://github.com/georgwiese/2048-rl
 
 1) Editing the game setting to a 3x3 format with the purpose
 to reduce the number of states. Game states are represented as shape (3, 3) numpy arrays 
-whose entries are 0 for empty fields and ln2(value) for any tiles.
+whose entries are 0 for empty fields and log2(value) for any tiles.
 
-2) Encapsulate experience
+2) Play the game and update the Q table
     
-3) Play the game
-    
-4) Strategies: random, static, highest reward, greedy, epsilon greedy
-
-Algorithms and strategies to play 2048 and collect experience.
 """
 
 from __future__ import absolute_import
@@ -22,7 +17,7 @@ from __future__ import division
 from __future__ import print_function
 
 # Import Numby library for array calculations
-import numby as np 
+import numpy as np 
 
 
 # Define Actions
@@ -164,7 +159,7 @@ class Game(object):
       return "     "
 
     print ("-" * 25)
-    for row in range(4): 
+    for row in range(3): 
       print ("|" + "|".join([tile_string(v) for v in self._state[row, :]]) + "|")
       print ("-" * 25)
 
@@ -177,37 +172,7 @@ class Game(object):
     return self._reward
 
 
-############################################
-    
-def play(state, action):
-  """Plays a single game, using a provided strategy.
 
-  Args:
-    strategy: A function that takes as argument a state and a list of available
-        actions and returns an action from the list.
-
-  Returns:
-    score, experiences where score is the final score and experiences is the
-        list Experience instances that represent the collected experience.
-  """
-
-  game = Game()
-
-  state = game.state()
-  game_over = game.game_over()
-  q_values = np.zeros([9^9, 4])
-  
-  
-  while not game_over and not game.reward == 100:
     
-    old_state = state
-    state_index = 10^8*old_state[0,0]+10^7*old_state[0,1]+10^6*old_state[0,2]+10^5*old_state[1,0]+10^4*old_state[1,1]+10^3*old_state[1,2]+10^2*old_state[2,0]+10^1*old_state[2,1]+10^0*old_state[2,2]
-    sorted_actions = np.argsort(q_values[state_index, ])
-    action = [a for a in sorted_actions if a in game.available_actions()][-1]
-    
-    reward = game.do_action(action)
-    state = game.state()
-    game_over = game.game_over()
-    
-  return reward, state
+
 
