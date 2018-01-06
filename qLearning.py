@@ -10,7 +10,6 @@ Following the tutorial:
 from game3x3 import Game
 import numpy as np
 
-print ("test start")
 
 def play(q_values):
   """Plays one game. The game goes on as long as it is not game over and as 
@@ -48,7 +47,7 @@ def play(q_values):
     
     score += reward
   
-  game.print_state()
+  #game.print_state()
   return q_values, score
 
 
@@ -57,22 +56,28 @@ q_values = np.zeros([10**9, 4])
     
 
 #play the game 
-num_episodes = 500
+num_episodes = 0
+
 
 #create a list to store all scores
-all_scores = []
+all_scores = [0]
     
-for i in range (num_episodes):
+#for i in range (num_episodes):
+while max(all_scores) != 100:
       
     game = Game()
     
     q_values, score = play(q_values)
     
     all_scores.append(score)
-     
-    print ("%s: %d \n" % (i, score))
     
-print ("The highest score is: %d" %(max(all_scores)))
+    num_episodes += 1
+     
+    # print ("%s: %d \n" % (i, score))
+    
+# print all_scores
+print ("Number of episodes: %d" % (num_episodes))
+print ("The highest score is: %d and occured %d times, %4.2f %% of all episodes." %(max(all_scores), all_scores.count(max(all_scores)), all_scores.count(max(all_scores))/num_episodes*100))
      
 
         
