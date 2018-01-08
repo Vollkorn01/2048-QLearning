@@ -13,7 +13,7 @@ import numpy as np
 
 def play(q_values):
   """Plays one game. The game goes on as long as it is not game over and as 
-        long as it has not reached the tile 256 (2**8).
+        long as it has not reached the tile 64 (2**6).
   
   Args:
     strategy: A function that takes as argument a state and a list of available
@@ -48,7 +48,7 @@ def play(q_values):
     score += reward
   
   #game.print_state()
-  return q_values, score
+  return q_values, score, reward
 
 
 # set the q values to zero to initialize
@@ -60,24 +60,31 @@ num_episodes = 0
 
 
 #create a list to store all scores
-all_scores = [0]
+all_scores = []
+all_rewards = []
     
 #for i in range (num_episodes):
-while max(all_scores) != 100:
+while num_episodes < 100000000:
       
     game = Game()
     
-    q_values, score = play(q_values)
+    q_values, score, reward = play(q_values)
     
     all_scores.append(score)
+    all_rewards.append(reward)
+    
     
     num_episodes += 1
-     
-    # print ("%s: %d \n" % (i, score))
     
-# print all_scores
-print ("Number of episodes: %d" % (num_episodes))
-print ("The highest score is: %d and occured %d times, %4.2f %% of all episodes." %(max(all_scores), all_scores.count(max(all_scores)), all_scores.count(max(all_scores))/num_episodes*100))
-     
+    if num_episodes % 10000 == 0:
+        print ("Number of episodes: %d" % (num_episodes))
+        print ("The highest reward is %d." %(max(all_rewards)))
+        print ("The game was won %d times in total, or %5.3f %% of the last 10'000 episodes." %(all_rewards.count(max(all_rewards)), all_rewards[-10000:].count(100)/10000))
+
+        
+    #print ("%s: %d \n" % (num_episodes, score))
+    
+# print (all_scores)
+
 
         
