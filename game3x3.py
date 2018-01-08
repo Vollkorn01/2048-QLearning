@@ -4,12 +4,10 @@ Game 2048 3x3
 Following the implementation of Georg Wiese: 
 https://github.com/georgwiese/2048-rl
 
-1) Editing the game setting to a 3x3 format with the purpose
+Editing the game setting to a 3x3 format with the purpose
 to reduce the number of states. Game states are represented as shape (3, 3) numpy arrays 
 whose entries are 0 for empty fields and log2(value) for any tiles.
 
-2) Play the game and update the Q table
-    
 """
 
 from __future__ import absolute_import
@@ -99,7 +97,7 @@ class Game(object):
     temp_state = np.rot90(self._state, action)
     reward = self._do_action_left(temp_state)
     self._state = np.rot90(temp_state, -action)
-    self._reward += reward # add value to variable (e.g. if merged)
+    self._reward = reward 
 
     self.add_random_tile()
 
@@ -127,8 +125,9 @@ class Game(object):
           state[row, col] = 0
           merged[merge_candidate] = True
           state[row, merge_candidate] += 1 # add value to variable
-          if (state[row, merge_candidate] == 8):
+          if (state[row, merge_candidate] == 6):
               reward = 100
+              break
 
         else:
           # Move tile to the left
