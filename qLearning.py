@@ -79,7 +79,7 @@ while num_episodes < 100000000:
     if num_episodes % 10000 == 0:
         print ("Number of episodes: %d" % (num_episodes))
         print ("The highest reward is %d." %(max(all_rewards)))
-        print ("The game was won %d times in total, or %5.3f %% of the last 10'000 episodes." %(all_rewards.count(max(all_rewards)), all_rewards[-10000:].count(100)/10000))
+        print ("The game was won %d times in total, or %5.3f %% of the last 10'000 episodes." %(all_rewards.count(max(all_rewards)), all_rewards[-10000:].count(100)/10000.))
 
         
     #print ("%s: %d \n" % (num_episodes, score))
