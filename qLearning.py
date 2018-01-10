@@ -13,7 +13,7 @@ import numpy as np
 
 def play(q_values):
   """Plays one game. The game goes on as long as it is not game over and as 
-        long as it has not reached the tile 64 (2**6).
+        long as it has not reached the tile 64 (2**8).
   
   Args:
     strategy: A function that takes as argument a state and a list of available
@@ -53,6 +53,11 @@ def play(q_values):
 
 # set the q values to zero to initialize
 q_values = np.zeros([10**9, 4])
+
+# if you want to use our trained model, please comment out the initialization 
+# to zero (line 55) and uncomment the following lines.
+#with open ("q_values_20170110.dat") as input:
+#   q_values = np.load(input)
     
 
 #play the game 
@@ -64,7 +69,7 @@ all_scores = []
 all_rewards = []
     
 #for i in range (num_episodes):
-while num_episodes < 100000000:
+while num_episodes < 1000000:
       
     game = Game()
     
@@ -79,12 +84,12 @@ while num_episodes < 100000000:
     if num_episodes % 10000 == 0:
         print ("Number of episodes: %d" % (num_episodes))
         print ("The highest reward is %d." %(max(all_rewards)))
-        print ("The game was won %d times in total, or %5.3f %% of the last 10'000 episodes." %(all_rewards.count(max(all_rewards)), all_rewards[-10000:].count(100)/10000.))
+        print ("The game was won %d times in total, or %5.3f %% of the last 10'000 episodes." %(all_rewards.count(max(all_rewards)), all_rewards[-10000:].count(max(all_rewards))/10000.0))
 
-        
-    #print ("%s: %d \n" % (num_episodes, score))
-    
-# print (all_scores)
+#with open('q_values_20170110.dat', 'w') as output:
+#    np.save(output, q_values)
+
+
 
 
         
